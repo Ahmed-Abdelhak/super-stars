@@ -13,7 +13,6 @@ class GithubService(
     private val filter: FilterInterface<GithubRepositoryModel>,
     private val errorHandler: ErrorHandlerInterface<HttpClientError>
 ) {
-
     fun getPopularRepositories()  =
         githubClient.getRepositories()
             .let { response ->
