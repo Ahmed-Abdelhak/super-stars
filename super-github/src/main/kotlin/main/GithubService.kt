@@ -13,16 +13,16 @@ class GithubService(
     private val filter: FilterInterface<GithubRepositoryModel>,
     private val errorHandler: ErrorHandlerInterface<HttpClientError>
 ) {
-    fun getPopularRepositories()  =
+    fun getPopularRepositories(): List<GithubRepositoryModel>  =
         githubClient.getRepositories()
-            .map {
+            .flatMap {
                 response ->
                 if (response.isSuccess) {
                     response.modelList.filter {
                         filter.filter(it)
                     }
                 } else {
-                    errorHandler.handle(response.error!!)
+                    errorHandler.handle(response.modelList, response.error!!)
                 }
             }
 }

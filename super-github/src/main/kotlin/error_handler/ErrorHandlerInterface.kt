@@ -1,5 +1,7 @@
 package com.redcare.pharmacy.error_handler
 
-interface ErrorHandlerInterface<TError: ErrorInterface> {
-    fun handle(error: TError)
+import com.redcare.pharmacy.common.model.GithubRepositoryModel
+
+interface ErrorHandlerInterface<TError : ErrorInterface> {
+    fun handle(modelList: List<GithubRepositoryModel>, error: TError): List<GithubRepositoryModel>
 }
