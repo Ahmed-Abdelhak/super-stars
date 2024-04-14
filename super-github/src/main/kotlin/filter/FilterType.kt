@@ -1,5 +1,5 @@
 package com.redcare.pharmacy.filter
 
-interface FilterTypeInterface {
-
+enum class FilterType {
+    Language,
 }
