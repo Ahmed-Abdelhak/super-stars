@@ -4,7 +4,7 @@ import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.google.gson.Gson
-import com.redcare.pharmacy.model.GithubRepositoryModel
+import com.redcare.pharmacy.common.model.GithubRepositoryModel
 import integration.client.http.GithubClientInterface
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
