@@ -7,5 +7,5 @@ import com.redcare.pharmacy.common.model.GithubRepositoryModel
 class HttpClientResponse(
     override val modelList: List<GithubRepositoryModel>,
     override val isSuccess: Boolean,
-    override val error: ErrorInterface?
+    override val error: HttpClientError?
 ) : ResponseInterface<GithubRepositoryModel>

@@ -15,7 +15,6 @@ private val logger = KotlinLogging.logger {}
 class GithubHttpClient(
     private val githubHttpApiProperties: GithubHttpApiProperties
 ): GithubClientInterface {
-
     override fun getRepositories():HttpClientResponse {
         val (_, _, result) =
             buildApiUrl()
@@ -24,7 +23,6 @@ class GithubHttpClient(
 
         return when (result) {
             is Result.Failure -> buildHttpClientFailureResponse(result)
-
             is Result.Success -> buildHttpClientSuccessResponse(result)
         }
     }
@@ -60,5 +58,4 @@ class GithubHttpClient(
 
     private fun buildApiUrl() =
         "${githubHttpApiProperties.endpointUrl}?q=created:${githubHttpApiProperties.sinceDate}&sort=${githubHttpApiProperties.sortType}&order=${githubHttpApiProperties.orderType}"
-
 }
