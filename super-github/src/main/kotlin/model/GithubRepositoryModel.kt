@@ -1,7 +1,9 @@
 package org.example.model
 
+import org.example.common.SuperModelInterface
+
 data class GithubRepositoryModel(
-    val id: Int,
+    override val id: Int,
     val name: String,
     val fullName: String,
     val description: String?,
@@ -29,7 +31,7 @@ data class GithubRepositoryModel(
     val defaultBranch: String,
     val createdAt: String,
     val updatedAt: String,
-)
+): SuperModelInterface
 
 data class GithubOwnerModel(
     val login: String,
