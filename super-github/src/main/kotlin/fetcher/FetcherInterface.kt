@@ -1,6 +1,6 @@
-package org.example.fetcher
+package com.redcare.pharmacy.fetcher
 
-import org.example.common.SuperModelInterface
+import com.redcare.pharmacy.common.SuperModelInterface
 
 interface FetcherInterface<TModel: SuperModelInterface> {
     fun fetch(): List<TModel>

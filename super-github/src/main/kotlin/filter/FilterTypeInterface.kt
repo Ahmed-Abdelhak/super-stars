@@ -1,4 +1,4 @@
-package org.example.filter
+package com.redcare.pharmacy.filter
 
 interface FilterTypeInterface {
 

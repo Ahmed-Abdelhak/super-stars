@@ -1,4 +1,4 @@
-package org.example.error_handler
+package com.redcare.pharmacy.error_handler
 
 interface ErrorInterface {
     val errorCode: Int

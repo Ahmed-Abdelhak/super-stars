@@ -1,7 +1,7 @@
-package org.example.sorter
+package com.redcare.pharmacy.sorter
 
-import org.example.common.SuperModelInterface
+import com.redcare.pharmacy.common.SuperModelInterface
 
-interface SorterInterface<TModel: SuperModelInterface, TSorterType: SorterTypeInterface> {
-    fun sort(models: List<TModel>, sorterType: SorterTypeInterface): List<TModel>
+interface SorterInterface<TModel: SuperModelInterface> {
+    fun sort(models: List<TModel>, sorterType: SortType): List<TModel>
 }

@@ -1,6 +1,4 @@
-package org.example.error_handler
-
-import org.example.common.SuperModelInterface
+package com.redcare.pharmacy.error_handler
 
 interface ErrorHandlerInterface<TError: ErrorInterface> {
     fun handle(error: TError)

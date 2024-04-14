@@ -1,9 +1,9 @@
-package org.example.error_handler
+package com.redcare.pharmacy.error_handler
 
-import org.example.common.SuperModelInterface
+import com.redcare.pharmacy.common.SuperModelInterface
 
 interface ResponseInterface<TModel: SuperModelInterface> {
-    val model: TModel
+    val modelList: List<TModel>
     val isSuccess: Boolean
     val error: ErrorInterface?
 }

@@ -1,7 +1,6 @@
-package org.example.filter
+package com.redcare.pharmacy.filter
 
-import org.example.common.SuperModelInterface
-import org.example.sorter.SorterTypeInterface
+import com.redcare.pharmacy.common.SuperModelInterface
 
 interface FilterInterface<TModel: SuperModelInterface, TFilterType: FilterTypeInterface> {
     fun filter(models: List<TModel>, filterType: TFilterType): List<TModel>
