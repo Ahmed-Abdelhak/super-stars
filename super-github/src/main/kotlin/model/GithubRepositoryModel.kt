@@ -1,6 +1,6 @@
-package org.example.model
+package com.redcare.pharmacy.model
 
-import org.example.common.SuperModelInterface
+import com.redcare.pharmacy.common.SuperModelInterface
 
 data class GithubRepositoryModel(
     override val id: Int,

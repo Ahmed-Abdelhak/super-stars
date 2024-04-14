@@ -21,8 +21,9 @@ configurations {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:2.6.2")
     implementation("org.springframework.boot:spring-boot-starter-validation:2.6.2")
-    implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.7.0")
+    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.2")
