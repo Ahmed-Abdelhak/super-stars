@@ -10,29 +10,43 @@ import mu.KotlinLogging
 import org.springframework.stereotype.Component
 
 private val logger = KotlinLogging.logger {}
+private val NEXT_PAGE_PATTERN = Regex("<(.*?)>; rel=\"next\"")
 
 @Component
 class GithubHttpClient(
     private val githubHttpApiProperties: GithubHttpApiProperties
 ): GithubClientInterface {
-    override fun getRepositories():HttpClientResponse {
-        val (_, _, result) =
-            buildApiUrl()
-                .httpGet()
-                .responseString()
-
-        return when (result) {
-            is Result.Failure -> buildHttpClientFailureResponse(result)
-            is Result.Success -> buildHttpClientSuccessResponse(result)
-        }
+    override fun getRepositories(): List<HttpClientResponse> {
+        //TODO:  launch a coroutine to handle Asynchronous requests for pagination
+       return doHttpCall()
     }
 
-    private fun buildHttpClientSuccessResponse(result: Result<String, FuelError>): HttpClientResponse {
-        val data = result.get()
+    private fun doHttpCall(): MutableList<HttpClientResponse> {
+        var url = buildApiUrl()
+        val pagesRemaining = true
+        val httpClientResponses = mutableListOf<HttpClientResponse>()
+
+        while (pagesRemaining) {
+            val (_, response, result) = url.httpGet().response()
+
+            httpClientResponses.add(
+                when (result) {
+                is Result.Failure -> buildHttpClientFailureResponse(result)
+                is Result.Success -> buildHttpClientSuccessResponse(result)
+            })
+
+            val hasNextPage = response.headers["Link"].contains("rel=\"next\"")
+            if (hasNextPage) {
+                url = NEXT_PAGE_PATTERN.find(response.headers["Link"].first())?.groupValues?.get(1)!!
+            }
+        }
+        return httpClientResponses
+    }
+
+    private fun buildHttpClientSuccessResponse(result: Result.Success<ByteArray>): HttpClientResponse {
         return HttpClientResponse(
-            modelList = Gson().fromJson(data, Array<GithubRepositoryModel>::class.java)
-                .toList()
-                .take(githubHttpApiProperties.listLimit), // could be handled by the API not in app memory
+            modelList = Gson().fromJson(result.get().decodeToString(), Array<GithubRepositoryModel>::class.java)
+                .toList(),
             isSuccess = true,
             error = null
         )
@@ -57,5 +71,9 @@ class GithubHttpClient(
     }
 
     private fun buildApiUrl() =
-        "${githubHttpApiProperties.endpointUrl}?q=created:${githubHttpApiProperties.sinceDate}&sort=${githubHttpApiProperties.sortType}&order=${githubHttpApiProperties.orderType}"
+        githubHttpApiProperties.endpointUrl +
+                "?q=created:${githubHttpApiProperties.sinceDate}" +
+                "&sort=${githubHttpApiProperties.sortType}" +
+                "&order=${githubHttpApiProperties.orderType}" +
+                "&per_page=${githubHttpApiProperties.listLimit}"
 }

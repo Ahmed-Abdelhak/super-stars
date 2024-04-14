@@ -15,7 +15,8 @@ class GithubService(
 ) {
     fun getPopularRepositories()  =
         githubClient.getRepositories()
-            .let { response ->
+            .map {
+                response ->
                 if (response.isSuccess) {
                     response.modelList.filter {
                         filter.filter(it)
