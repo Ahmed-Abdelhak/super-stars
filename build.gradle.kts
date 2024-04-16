@@ -2,12 +2,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.adarshr.gradle.testlogger.theme.ThemeType
 
 plugins {
-    kotlin("jvm") version "1.7.0"
+    kotlin("jvm") version "1.9.21"
+    id("io.freefair.lombok") version "8.6"
     java
     idea
-    id("com.google.cloud.tools.jib") version "2.1.0"
+    id("com.google.cloud.tools.jib") version "3.4.0" apply false
     id("com.adarshr.test-logger") version "3.2.0"
-    jacoco
 }
 
 allprojects {
@@ -16,7 +16,6 @@ allprojects {
     apply(plugin = "kotlin")
     apply(plugin = "com.google.cloud.tools.jib")
     apply(plugin = "com.adarshr.test-logger")
-    apply(plugin = "jacoco")
 
     group = "com.redcare.pharmacy.super.stars"
     version = "0.1"
@@ -28,20 +27,6 @@ allprojects {
 
     tasks.test {
         useJUnitPlatform()
-        finalizedBy(tasks.jacocoTestReport)
-    }
-
-    tasks.jacocoTestReport {
-        dependsOn(tasks.test) // tests are required to run before generating the report
-        reports {
-            xml.required.set(true)
-            csv.required.set(false)
-            html.required.set(true)
-        }
-    }
-
-    jacoco {
-        toolVersion = "0.8.8"
     }
 
     tasks.withType<KotlinCompile>() {
