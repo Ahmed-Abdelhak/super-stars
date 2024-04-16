@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 data class GithubHttpApiProperties(
     val endpointUrl: String,
     val sinceDate: String,
-    val orderType: String,
-    val sortType: String,
+    val orderType: OrderType,
+    val sortType: SortType,
     val listLimit: String
 )

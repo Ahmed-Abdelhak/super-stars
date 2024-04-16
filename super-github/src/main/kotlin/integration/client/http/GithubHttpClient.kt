@@ -7,43 +7,50 @@ import com.google.gson.Gson
 import com.redcare.pharmacy.integration.client.http.models.HttpApiResponse
 import com.redcare.pharmacy.integration.client.http.models.HttpClientError
 import com.redcare.pharmacy.integration.client.http.models.HttpClientResponse
+import com.redcare.pharmacy.integration.client.http.utils.UrlUtils
+import com.redcare.pharmacy.integration.client.http.utils.hasNextPage
+import com.redcare.pharmacy.integration.client.http.utils.hasRemainingRateLimit
 import integration.client.http.GithubClientInterface
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
 
 private val logger = KotlinLogging.logger {}
-private val NEXT_PAGE_PATTERN = Regex("<(.*?)>; rel=\"next\"")
 
 @Component
 class GithubHttpClient(
     private val githubHttpApiProperties: GithubHttpApiProperties
-): GithubClientInterface {
+) : GithubClientInterface {
     override fun getRepositories(): List<HttpClientResponse> {
         //TODO:  launch a coroutine to handle Asynchronous requests for pagination
-       return doHttpCall()
+        return doHttpCall()
     }
 
     private fun doHttpCall(): MutableList<HttpClientResponse> {
         var url = buildApiUrl()
         var hasNextPage = true
+        var hasRemainingRateLimit = true
         val httpClientResponses = mutableListOf<HttpClientResponse>()
 
-        while (hasNextPage) {
+        while (hasNextPage &&
+            hasRemainingRateLimit &&
+            httpClientResponses.size <= githubHttpApiProperties.listLimit.toInt()
+        ) {
             val (_, response, result) = url.httpGet().response()
 
             httpClientResponses.add(
                 when (result) {
-                is Result.Failure -> buildHttpClientFailureResponse(result)
-                is Result.Success -> buildHttpClientSuccessResponse(result)
-            })
+                    is Result.Failure -> buildHttpClientFailureResponse(result)
+                    is Result.Success -> buildHttpClientSuccessResponse(result)
+                }
+            )
 
-            hasNextPage = response.headers["Link"].contains("rel=\"next\"")
+            hasNextPage = response.headers.hasNextPage()
 
-            // dirty way to handle rateLimiting, ideally we should have a rateLimiting component
-            val hasRemainingRateLimit = response.headers["X-RateLimit-Remaining"].first().toInt() > 0
+            // a dirty way to handle rateLimiting, ideally we should have a rateLimiting component
+            hasRemainingRateLimit = response.headers.hasRemainingRateLimit()
 
-            if (hasNextPage && hasRemainingRateLimit) {
-                url = NEXT_PAGE_PATTERN.find(response.headers["Link"].first())?.groupValues?.get(1)!!
+            if (hasNextPage) {
+                url = UrlUtils.buildNextUrl(response)
             }
         }
         return httpClientResponses
@@ -80,6 +87,5 @@ class GithubHttpClient(
         githubHttpApiProperties.endpointUrl +
                 "?q=created:${githubHttpApiProperties.sinceDate}" +
                 "&sort=${githubHttpApiProperties.sortType}" +
-                "&order=${githubHttpApiProperties.orderType}" +
-                "&per_page=${githubHttpApiProperties.listLimit}"
+                "&order=${githubHttpApiProperties.orderType}"
 }
