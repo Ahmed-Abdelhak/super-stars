@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 @Component
 class LanguageFilter(
     @Value("\${github.repositories.filter-type}")
-    private val filterType: FilterType
+    private val filterType: FilterTypeLanguage
 ): FilterInterface<GithubRepositoryModel> {
     override fun filter(model: GithubRepositoryModel) =
         model.language == filterType.name

@@ -4,7 +4,7 @@ import com.redcare.pharmacy.common.model.GithubRepositoryModel
 import com.redcare.pharmacy.error_handler.ErrorHandlerInterface
 import com.redcare.pharmacy.filter.FilterInterface
 import com.redcare.pharmacy.integration.client.http.GithubHttpClient
-import com.redcare.pharmacy.integration.client.http.HttpClientError
+import com.redcare.pharmacy.integration.client.http.models.HttpClientError
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,7 +13,7 @@ class GithubService(
     private val filter: FilterInterface<GithubRepositoryModel>,
     private val errorHandler: ErrorHandlerInterface<HttpClientError>
 ) {
-    fun getPopularRepositories(): List<GithubRepositoryModel>  =
+    fun getPopularRepositories(): List<GithubRepositoryModel> =
         githubClient.getRepositories()
             .flatMap {
                 response ->

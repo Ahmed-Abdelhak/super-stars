@@ -1,4 +1,4 @@
-package com.redcare.pharmacy.integration.client.http
+package com.redcare.pharmacy.integration.client.http.models
 
 import com.redcare.pharmacy.error_handler.ErrorInterface
 
