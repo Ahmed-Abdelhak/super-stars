@@ -4,7 +4,9 @@ import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.google.gson.Gson
-import com.redcare.pharmacy.common.model.GithubRepositoryModel
+import com.redcare.pharmacy.integration.client.http.models.HttpApiResponse
+import com.redcare.pharmacy.integration.client.http.models.HttpClientError
+import com.redcare.pharmacy.integration.client.http.models.HttpClientResponse
 import integration.client.http.GithubClientInterface
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
@@ -23,10 +25,10 @@ class GithubHttpClient(
 
     private fun doHttpCall(): MutableList<HttpClientResponse> {
         var url = buildApiUrl()
-        val pagesRemaining = true
+        var hasNextPage = true
         val httpClientResponses = mutableListOf<HttpClientResponse>()
 
-        while (pagesRemaining) {
+        while (hasNextPage) {
             val (_, response, result) = url.httpGet().response()
 
             httpClientResponses.add(
@@ -35,8 +37,12 @@ class GithubHttpClient(
                 is Result.Success -> buildHttpClientSuccessResponse(result)
             })
 
-            val hasNextPage = response.headers["Link"].contains("rel=\"next\"")
-            if (hasNextPage) {
+            hasNextPage = response.headers["Link"].contains("rel=\"next\"")
+
+            // dirty way to handle rateLimiting, ideally we should have a rateLimiting component
+            val hasRemainingRateLimit = response.headers["X-RateLimit-Remaining"].first().toInt() > 0
+
+            if (hasNextPage && hasRemainingRateLimit) {
                 url = NEXT_PAGE_PATTERN.find(response.headers["Link"].first())?.groupValues?.get(1)!!
             }
         }
@@ -45,8 +51,8 @@ class GithubHttpClient(
 
     private fun buildHttpClientSuccessResponse(result: Result.Success<ByteArray>): HttpClientResponse {
         return HttpClientResponse(
-            modelList = Gson().fromJson(result.get().decodeToString(), Array<GithubRepositoryModel>::class.java)
-                .toList(),
+            modelList = Gson().fromJson(result.get().decodeToString(), HttpApiResponse::class.java)
+                .items,
             isSuccess = true,
             error = null
         )

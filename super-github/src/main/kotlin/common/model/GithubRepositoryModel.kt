@@ -1,8 +1,11 @@
 package com.redcare.pharmacy.common.model
 
+import com.google.gson.annotations.SerializedName
+
 data class GithubRepositoryModel(
     override val id: Int,
     val name: String,
+    @SerializedName("full_name")
     val fullName: String,
     val description: String?,
     val language: String?,
@@ -11,8 +14,11 @@ data class GithubRepositoryModel(
     val stargazersCount: Int,
     val isPrivate: Boolean,
     val visibility: String,
+    @SerializedName("archived")
     val isArchived: Boolean,
+    @SerializedName("disabled")
     val isDisabled: Boolean,
+    @SerializedName("has_issues")
     val hasIssues: Boolean,
     val hasProjects: Boolean,
     val hasWiki: Boolean,
@@ -25,6 +31,7 @@ data class GithubRepositoryModel(
     val issueEventsUrl: String,
     val issuesUrl: String,
     val cloneUrl: String,
+    @SerializedName("allow_forking")
     val isAllowForking: Boolean,
     val defaultBranch: String,
     val createdAt: String,
