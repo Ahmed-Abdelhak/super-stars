@@ -24,6 +24,8 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
     testImplementation("org.mockito:mockito-core:4.2.0")
     testImplementation("org.mockito:mockito-inline:4.2.0")
+    testImplementation("io.mockk:mockk:1.13.10")
+
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 }
