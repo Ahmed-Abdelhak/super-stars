@@ -25,15 +25,16 @@ class GithubHttpClient(
         return doHttpCall()
     }
 
-    private fun doHttpCall(): MutableList<HttpClientResponse> {
+    private fun doHttpCall(): List<HttpClientResponse> {
         var url = buildApiUrl()
         var hasNextPage = true
         var hasRemainingRateLimit = true
+        var repositoriesCounter = 0
         val httpClientResponses = mutableListOf<HttpClientResponse>()
 
         while (hasNextPage &&
             hasRemainingRateLimit &&
-            httpClientResponses.size <= githubHttpApiProperties.listLimit.toInt()
+            repositoriesCounter <= githubHttpApiProperties.listLimit.toInt()
         ) {
             val (_, response, result) = url.httpGet().response()
 
@@ -44,8 +45,8 @@ class GithubHttpClient(
                 }
             )
 
+            repositoriesCounter = httpClientResponses.sumOf { it.modelList.count()}
             hasNextPage = response.headers.hasNextPage()
-
             // a dirty way to handle rateLimiting, ideally we should have a rateLimiting component
             hasRemainingRateLimit = response.headers.hasRemainingRateLimit()
 

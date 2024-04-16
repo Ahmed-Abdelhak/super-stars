@@ -11,7 +11,11 @@ class ApplicationStartupListener(private val githubService: GithubService) :
 
     private val logger = KotlinLogging.logger {}
     override fun onApplicationEvent(event: ApplicationReadyEvent) {
-        logger.info { githubService.getPopularRepositories().count() }
+        logger.info {
+            "Count of Repositories: " +
+                    githubService.getPopularRepositories().size +
+            " , RepositoriesList: " + githubService.getPopularRepositories()
+        }
     }
 
 }
