@@ -2,7 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.adarshr.gradle.testlogger.theme.ThemeType
 
 plugins {
-    kotlin("jvm") version "1.7.0"
+    kotlin("jvm") version "1.9.21"
+    id("io.freefair.lombok") version "8.6"
     java
     idea
     id("com.google.cloud.tools.jib") version "2.1.0"
