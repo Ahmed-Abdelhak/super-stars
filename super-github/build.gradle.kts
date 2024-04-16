@@ -33,3 +33,17 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
+
+jib {
+    container {
+        mainClass = "com.redcare.pharmacy.SuperGithubApplicationKt"
+        jvmFlags = listOf("-server", "-XX:+PrintFlagsFinal")
+        creationTime.set("USE_CURRENT_TIMESTAMP")
+    }
+    from {
+        image = "eclipse-temurin:17-jre"
+    }
+    to {
+        image = "super-github"
+    }
+}

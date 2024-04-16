@@ -6,7 +6,7 @@ plugins {
     id("io.freefair.lombok") version "8.6"
     java
     idea
-    id("com.google.cloud.tools.jib") version "2.1.0"
+    id("com.google.cloud.tools.jib") version "3.4.0" apply false
     id("com.adarshr.test-logger") version "3.2.0"
 }
 
